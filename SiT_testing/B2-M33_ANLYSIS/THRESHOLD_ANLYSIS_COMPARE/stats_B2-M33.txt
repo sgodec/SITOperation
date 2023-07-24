@@ -1,0 +1,7 @@
+Mean (Before Calibration): 178.456
+Sigma (Before Calibration): 47.1765
+Entries (Before Calibration): 26880
+
+Mean (After Calibration): 195.687
+Sigma (After Calibration): 45.6208
+Entries (After Calibration): 26880
