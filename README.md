@@ -17,7 +17,7 @@ The app is designed to work with Python and requires the PyVisa6 library to be i
    -ensure you have the PyVisa6 library installed on your system. You can install it using pip:
      ```
      pip install pyvisa-py
-     ``
+     
 3. **Open Project in Python:**
    - Navigate to the directory where you cloned the repository.
    - Find the Python script for /sitgui/sit_anlysis.py
