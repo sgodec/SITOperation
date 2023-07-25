@@ -25,4 +25,4 @@ The app is designed to work with Python and requires the PySide6 library to be i
 3. **Open Project in Python:**
    - Navigate to the directory where you cloned the repository.
    - Find the Python script for /sitgui/sit_anlysis.py
-   - run it
+   - Run script
