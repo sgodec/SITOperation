@@ -1,7 +1,7 @@
 Mean threshold: 2196.79
 Sigma threshold: 127.489
-Mean of sigma threshold: 266.59
-Sigma of sigma threshold: 42.0164
+Mean of sigma: 266.59
+Sigma of sigma: 42.0164
 Bad pixels threshold: 49
 Mean ToT: 8.64925
 Sigma Tot: 0.736187
