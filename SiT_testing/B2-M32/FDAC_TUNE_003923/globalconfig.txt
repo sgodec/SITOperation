@@ -1,0 +1,4 @@
+3923
+/root/pixelrce/rce/moduleconfigs/TopConfigTB2023-new3__3922.cfg
+/root/calibData
+/root/pixelrce/rce/moduleconfigs/
