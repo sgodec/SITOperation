@@ -130,12 +130,16 @@ class MainWindow(QMainWindow):
         self.sort_menu = QMenu("Sort")
         self.menuBar().addMenu(self.sort_menu)
 
+
         self.sort_actions = [
             QAction("Random Sort", self.sort_menu),
             QAction("Sort by Lowest Sigma Value", self.sort_menu),
             QAction("Sort by Lowest Leakage Current", self.sort_menu),
             QAction("Sort by Highest Breakdown Voltage", self.sort_menu),
+            QAction("Sort by least badpixels Threshold", self.sort_menu),
+            QAction("Sort by least badpixels ToT", self.sort_menu),
         ]
+
 
         for sort_action in self.sort_actions:
             self.sort_menu.addAction(sort_action)
@@ -147,6 +151,22 @@ class MainWindow(QMainWindow):
                 sort_action.triggered.connect(self.on_sort_leakage_current)
             elif sort_action.text() == "Sort by Highest Breakdown Voltage":
                 sort_action.triggered.connect(self.on_sort_breakdown_voltage)
+            elif sort_action.text() == "Sort by least badpixels Threshold":
+                sort_action.triggered.connect(self.on_sort_badpixels_threshold)
+            elif sort_action.text() == "Sort by least badpixels ToT":
+                sort_action.triggered.connect(self.on_sort_badpixels_tot)
+        
+        self.combined_module_analysis_menu = QMenu("Combined Module Analysis")
+        self.menuBar().addMenu(self.combined_module_analysis_menu)
+
+        self.combined_iv_curves_action = QAction("Combined IV Curves", self.combined_module_analysis_menu)
+        self.combined_module_analysis_menu.addAction(self.combined_iv_curves_action)
+        self.combined_iv_curves_action.triggered.connect(self.on_combined_iv_curves)
+
+        self.badpixels_comparison_action = QAction("Bad Pixels Comparison", self.combined_module_analysis_menu)
+        self.combined_module_analysis_menu.addAction(self.badpixels_comparison_action)
+        self.badpixels_comparison_action.triggered.connect(self.on_badpixels_comparison)
+
 
         self.analysis_window = None
        
@@ -212,9 +232,25 @@ class MainWindow(QMainWindow):
     def on_sort_breakdown_voltage(self):
         self.chips.sort(key=lambda chip: -float(chip["stats"]["Breakdown Voltage/cmpl reached [V]"]))
         self.update_table()
+    def on_sort_badpixels_threshold(self):
+        self.chips.sort(key=lambda chip: -float(chip["stats"]["Bad pixels threshold"]))
+        self.update_table()
+    def on_sort_badpixels_tot(self):
+        self.chips.sort(key=lambda chip: -float(chip["stats"]["Bad pixels Tot"]))
+        self.update_table()
 
     def clear_analysis_window(self):
         self.analysis_window = None
+
+    def on_combined_iv_curves(self):
+        # Display the combined IV curves picture
+        self.image_window = ImageWindowcombined("../SiT_testing/all_modules_anlysis/iv_combined.png")
+        self.image_window.show()
+
+    def on_badpixels_comparison(self):
+        # Display the bad pixels comparison picture
+        self.image_window = ImageWindowcombined("../SiT_testing/all_modules_anlysis/sensor_badpixels_values.png")
+        self.image_window.show()
 
 class ImageWindow(QMainWindow):
     def __init__(self, image_path, parent=None):
@@ -233,12 +269,13 @@ class ImageWindow(QMainWindow):
         self.image_label.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.image_label)
 
-
 class ClickableImageLabel(QLabel):
-    def __init__(self, image_path, parent=None):
+    def __init__(self, image_path, scale_factor=0.5, parent=None):
         super().__init__(parent)
         self.image_path = image_path
-        self.setPixmap(QPixmap(image_path))
+        pixmap = QPixmap(self.image_path)
+        scaled_pixmap = pixmap.scaled(pixmap.width()*scale_factor, pixmap.height()*scale_factor, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.setPixmap(scaled_pixmap)
         self.setScaledContents(False)
         self.setAlignment(Qt.AlignCenter)
 
@@ -248,6 +285,29 @@ class ClickableImageLabel(QLabel):
             self.image_window = ImageWindow(self.image_path)
             self.image_window.show()
 
+class ImageWindowcombined(QMainWindow):
+    def __init__(self, image_path, parent=None):
+        super().__init__(parent)
+        self.image_path = image_path
+        self.resize(1200, 1000)
+
+        # Load the original pixmap
+        self.original_pixmap = QPixmap(self.image_path)
+
+        # Set up the QLabel to display the image
+        self.image_label = QLabel()
+        self.setCentralWidget(self.image_label)
+
+        # Initial update of the displayed image
+        self.update_image()
+
+    def resizeEvent(self, event):
+        self.update_image()
+
+    def update_image(self):
+        # Scale the original pixmap to fit within the current window size, maintaining aspect ratio
+        scaled_pixmap = self.original_pixmap.scaled(self.size(), Qt.KeepAspectRatio)
+        self.image_label.setPixmap(scaled_pixmap)
 
 
 class AnalysisWindow(QMainWindow):
