@@ -61,8 +61,12 @@ class MainWindow(QMainWindow):
         
         
         self.chips = []
+        base_path = os.path.join('..', 'SiT_testing')
+        
         for name in chip_names:
-            file_path = f"../SiT_testing/{name}_ANLYSIS/stats_{name}.txt"
+            file_name = f"stats_{name}.txt"
+            sub_directory = f"{name}_ANLYSIS"
+            file_path = os.path.join(base_path, sub_directory, file_name)
             chip = {
         "name": name,
         "stats": {}}
