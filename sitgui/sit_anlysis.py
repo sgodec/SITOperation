@@ -1,12 +1,9 @@
+import os
 import sys
 import random
-from PySide6.QtWidgets import (QApplication, QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem, QMenuBar, QMenu,QScrollArea)
+from PySide6.QtWidgets import (QApplication, QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem, QMenuBar, QMenu,QScrollArea,QMessageBox,QHeaderView)
 from PySide6.QtGui import QPixmap, QColor, QAction
 from PySide6.QtCore import Qt
-import os
-from PySide6.QtWidgets import QHeaderView
-from PySide6.QtWidgets import QMessageBox
-
 
 class ClickableTableWidget(QTableWidget):
     def __init__(self, *args, **kwargs):
@@ -51,12 +48,16 @@ class MainWindow(QMainWindow):
         # Add title widget to main layout
         
         self.layout.addWidget(self.title_widget)
-        with open("chips.txt", "r") as names:
-                chips = names.read()
-                
-                chip_names = chips.strip().split("\n")
-   
-                
+    
+        # Get path to the text file in a cross-platform way
+        file_dir = os.getcwd()  # This will get the current working directory
+        file_name = "chips.txt"
+        file_path = os.path.join(file_dir, file_name)
+
+        # Open the file
+        with open(file_path, "r") as names:
+            chips = names.read() 
+            chip_names = chips.strip().split("\n")         
         
         
         self.chips = []
@@ -87,8 +88,6 @@ class MainWindow(QMainWindow):
             # Convert to hexadecimal and append to the list
             self.colors.append(f'#{red:02X}{green:02X}00')
       
-  
-
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -270,7 +269,21 @@ class AnalysisWindow(QMainWindow):
         self.scroll_layout = QVBoxLayout(self.scroll_widget)
         
         # Add images to the scroll layout
-        image_paths = [f"../SiT_testing/{chip_name}_ANLYSIS/THRESHOLD_ANLYSIS_COMPARE/threshold_compare.png",f"../SiT_testing/{chip_name}_ANLYSIS/THRESHOLD_ANLYSIS_COMPARE/simga_dist_compare.png",f"../SiT_testing/{chip_name}_ANLYSIS/THRESHOLD_ANLYSIS2/BadPixels_Mod_25;1.png",f"../SiT_testing/{chip_name}_ANLYSIS/TOT_ANLYSIS_COMPARE/tot_sigma_compare.png",f"../SiT_testing/{chip_name}_ANLYSIS/TOT_ANLYSIS_COMPARE/tot_mean_compare.png",f"../SiT_testing/{chip_name}_ANLYSIS/TOT_ANLYSIS/BadPixels_Mod_25;1.png",f"../SiT_testing/{chip_name}_ANLYSIS/iv_curve.png"]
+
+
+        base_path = os.path.join('..', 'SiT_testing')
+        file_names = [
+            os.path.join(f"{chip_name}_ANLYSIS", "THRESHOLD_ANLYSIS_COMPARE", "threshold_compare.png"),
+            os.path.join(f"{chip_name}_ANLYSIS", "THRESHOLD_ANLYSIS_COMPARE", "simga_dist_compare.png"),
+            os.path.join(f"{chip_name}_ANLYSIS", "THRESHOLD_ANLYSIS2", "BadPixels_Mod_25;1.png"),
+            os.path.join(f"{chip_name}_ANLYSIS", "TOT_ANLYSIS_COMPARE", "tot_sigma_compare.png"),
+            os.path.join(f"{chip_name}_ANLYSIS", "TOT_ANLYSIS_COMPARE", "tot_mean_compare.png"),
+            os.path.join(f"{chip_name}_ANLYSIS", "TOT_ANLYSIS", "BadPixels_Mod_25;1.png"),
+            os.path.join(f"{chip_name}_ANLYSIS", "iv_curve.png")
+        ]
+
+        image_paths = [os.path.join(base_path, file_name) for file_name in file_names]
+
         for image_path in image_paths:
             image_label = ClickableImageLabel(image_path)
             self.scroll_layout.addWidget(image_label)
