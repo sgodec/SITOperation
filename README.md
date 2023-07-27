@@ -15,14 +15,19 @@ The app is designed to work with Python and requires the PySide6 library to be i
    - Install the PySida6 library using pip by entering the following command:
      ```
      pip install PySide6
+3. **Install Pandas:**
+   - Open a Command Prompt or PowerShell window.
+   - Install the PySida6 library using pip by entering the following command:
+     ```
+     pip install pandas
 
-3. **Clone the Repository:**
+4. **Clone the Repository:**
    - If you haven't cloned the GitHub repository for your project, follow these steps:
      - Click on the "Code" button on the GitHub repository page.
      - Choose "Download ZIP" to download the repository as a ZIP file.
      - Extract the contents of the ZIP file to a local directory
      
-3. **Open Project in Python:**
+5. **Open Project in Python:**
    - Navigate to the directory where you cloned the repository.
    - Find the Python script for /sitgui/sit_anlysis.py
    - Run script
