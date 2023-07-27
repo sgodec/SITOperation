@@ -2,7 +2,11 @@ import os
 import sys
 import random
 from PySide6.QtWidgets import (QApplication, QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem, QMenuBar, QMenu,QScrollArea,QMessageBox,QHeaderView)
+<<<<<<< HEAD
 from PySide6.QtGui import QPixmap, QColor, QAction
+=======
+from PySide6.QtGui import QPixmap, QColor, QAction, QIcon
+>>>>>>> d7a54c3 (Added export excel tablet button, fixed drawing of iv curve)
 from PySide6.QtCore import Qt
 
 class ClickableTableWidget(QTableWidget):
@@ -114,6 +118,15 @@ class MainWindow(QMainWindow):
         self.update_table()
         self.table.cellClicked.connect(self.open_analysis_window)
         self.layout.addWidget(self.table)
+<<<<<<< HEAD
+=======
+        
+        # In the __init__ method:
+        self.export_button = QPushButton('Export to Excel')
+        self.export_button.clicked.connect(self.export_to_excel)
+        self.layout.addWidget(self.export_button)
+
+>>>>>>> d7a54c3 (Added export excel tablet button, fixed drawing of iv curve)
 
         # Create a QLabel to act as the legend
         # Format the legend to display each key-value pair on a new line
@@ -251,6 +264,28 @@ class MainWindow(QMainWindow):
         # Display the bad pixels comparison picture
         self.image_window = ImageWindowcombined("../SiT_testing/all_modules_anlysis/sensor_badpixels_values.png")
         self.image_window.show()
+<<<<<<< HEAD
+=======
+    def export_to_excel(self):
+        # Create a dictionary to hold the data
+        data = {}
+
+        # Get the data from the table
+        for i in range(self.table.columnCount()):
+            column_data = []
+            header = self.table.horizontalHeaderItem(i).text()
+            for j in range(self.table.rowCount()):
+                item = self.table.item(j, i)
+                column_data.append(item.text() if item else None)
+            data[header] = column_data
+
+        # Create a DataFrame from the dictionary
+        df = pd.DataFrame(data)
+
+        # Write the DataFrame to an Excel file
+        df.to_excel('modules_table.xlsx', index=False)
+
+>>>>>>> d7a54c3 (Added export excel tablet button, fixed drawing of iv curve)
 
 class ImageWindow(QMainWindow):
     def __init__(self, image_path, parent=None):
@@ -310,6 +345,11 @@ class ImageWindowcombined(QMainWindow):
         self.image_label.setPixmap(scaled_pixmap)
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> d7a54c3 (Added export excel tablet button, fixed drawing of iv curve)
 class AnalysisWindow(QMainWindow):
     def __init__(self, chip_name, stats, parent=None):
         super().__init__(parent)
