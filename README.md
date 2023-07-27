@@ -17,7 +17,7 @@ The app is designed to work with Python and requires the PySide6 library to be i
      pip install PySide6
 3. **Install Pandas:**
    - Open a Command Prompt or PowerShell window.
-   - Install the PySida6 library using pip by entering the following command:
+   - Install the Pandas library using pip by entering the following command:
      ```
      pip install pandas
 
