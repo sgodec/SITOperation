@@ -5,7 +5,10 @@ from PySide6.QtWidgets import (QApplication, QLabel, QMainWindow, QPushButton, Q
 from PySide6.QtGui import QPixmap, QColor, QAction, QIcon
 from PySide6.QtCore import Qt
 import pandas as pd
+import subprocess
 
+def run_python_file(filename):
+    subprocess.run(["python3", filename])
 
 
 class ClickableTableWidget(QTableWidget):
@@ -189,7 +192,6 @@ class MainWindow(QMainWindow):
         revert_table_action = QAction("Revert to Original Table", self.tests_with_biased_voltage_menu)
         self.tests_with_biased_voltage_menu.addAction(revert_table_action)
         revert_table_action.triggered.connect(self.revert_to_original_table)
-       
         
         self.combined_module_analysis_menu = QMenu("Combined Module Analysis")
         self.menuBar().addMenu(self.combined_module_analysis_menu)
@@ -305,11 +307,13 @@ class MainWindow(QMainWindow):
 
     def on_combined_iv_curves(self):
         # Display the combined IV curves picture
+        run_python_file('anlysis_scripts/group_iv.py')
         self.image_window = ImageWindowcombined("../SiT_testing/all_modules_anlysis/iv_combined.png")
         self.image_window.show()
 
     def on_badpixels_comparison(self):
         # Display the bad pixels comparison picture
+        run_python_file('anlysis_scripts/group_bad_pixles.py')
         self.image_window = ImageWindowcombined("../SiT_testing/all_modules_anlysis/sensor_badpixels_values.png")
         self.image_window.show()
     def export_to_excel(self):

@@ -9,4 +9,4 @@ Mean sigma distribution ToT: 0.210319
 Sigma sigma distribution ToT: 0.177901
 Bad pixels Tot: 28
 Leakage Current[mA]: 0.0858769
-Breakdown Voltage/cmpl reached [V]: 65
+Breakdown Voltage/cmpl reached [V]: 58
