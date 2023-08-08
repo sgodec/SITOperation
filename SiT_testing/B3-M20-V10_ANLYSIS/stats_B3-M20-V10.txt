@@ -1,0 +1,10 @@
+Mean threshold: 1991.35
+Sigma threshold: 98.6651
+Mean of sigma: 159.476
+Sigma of sigma: 13.4713
+Bad pixels threshold: 35
+Mean ToT: 9.98935
+Sigma Tot: 0.209464
+Mean sigma distribution ToT: 0.16627
+Sigma sigma distribution ToT: 0.16236
+Bad pixels Tot: 27
