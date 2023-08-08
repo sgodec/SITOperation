@@ -6,6 +6,8 @@ from PySide6.QtGui import QPixmap, QColor, QAction, QIcon
 from PySide6.QtCore import Qt
 import pandas as pd
 
+
+
 class ClickableTableWidget(QTableWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,6 +20,38 @@ class ClickableTableWidget(QTableWidget):
 
 
 class MainWindow(QMainWindow):
+    def read_chip_data_from_file(self, file_name):
+        # Get path to the text file in a cross-platform way
+        base_path = os.path.join('..', 'SiT_testing')
+
+        with open(file_name, "r") as names:
+            chip_names = names.read().strip().split("\n")  
+
+        chips = []
+
+        for name in chip_names:
+            file_name = f"stats_{name}.txt"
+            sub_directory = f"{name}_ANLYSIS"
+            file_path = os.path.join(base_path, sub_directory, file_name)
+            chip = {
+                "name": name,
+                "stats": {}
+            }
+
+            with open(file_path, "r") as file:
+                lines = file.readlines()
+                
+            for line in lines:
+                # Split the line into stat_key and value
+                stat_key, value = line.strip().split(": ")
+                stat_key = stat_key.strip()
+
+                # Add stat_name and value to the stats dictionary
+                chip["stats"][stat_key] = value
+
+            chips.append(chip)
+
+        return chips
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("SiTOperation")
@@ -51,42 +85,21 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.title_widget)
     
         # Get path to the text file in a cross-platform way
-        file_dir = os.getcwd()  # This will get the current working directory
-        file_name = "chips.txt"
-        file_path = os.path.join(file_dir, file_name)
+        # file_dir = os.getcwd()  # This will get the current working directory
+        # file_name = "chips.txt"
+        # file_path = os.path.join(file_dir, file_name)
 
         # Open the file
-        with open(file_path, "r") as names:
+        with open('chips.txt', "r") as names:
             chips = names.read() 
             chip_names = chips.strip().split("\n")         
         
-        
-        self.chips = []
-        base_path = os.path.join('..', 'SiT_testing')
-        
-        for name in chip_names:
-            file_name = f"stats_{name}.txt"
-            sub_directory = f"{name}_ANLYSIS"
-            file_path = os.path.join(base_path, sub_directory, file_name)
-            chip = {
-        "name": name,
-        "stats": {}}
+    
+        self.original_chips = self.read_chip_data_from_file('chips.txt')
+        self.chips = self.original_chips.copy()
 
-            with open(file_path, "r") as file:
-                lines = file.readlines()
-                
-            for line in lines:
-                # Split the line into stat_key and value
-                stat_key, value = line.strip().split(": ")
-                stat_key = stat_key.strip()
-
-                # Add stat_name and value to the stats dictionary
-                chip["stats"][stat_key] = value
-        
-
-            self.chips.append(chip)
         self.colors = []
-        for i in range(len(chip_names)):
+        for i in range(len(self.chips)):
             # Calculate the green and red values based on the position in the list
             red = int(255 * i / (len(chip_names) - 1))
             green = 255 - red
@@ -160,6 +173,23 @@ class MainWindow(QMainWindow):
                 sort_action.triggered.connect(self.on_sort_badpixels_threshold)
             elif sort_action.text() == "Sort by least badpixels ToT":
                 sort_action.triggered.connect(self.on_sort_badpixels_tot)
+
+         # Add a menu option for showing biased voltage table
+
+        # create a menu instance
+        self.tests_with_biased_voltage_menu = QMenu("Tests with Biased Voltage", self)
+        
+        # add it to the menu bar
+        self.menuBar().addMenu(self.tests_with_biased_voltage_menu)
+    
+        biased_voltage_action = QAction("Show Biased Voltage Table", self.tests_with_biased_voltage_menu)
+        self.tests_with_biased_voltage_menu.addAction(biased_voltage_action)
+        biased_voltage_action.triggered.connect(self.show_biased_voltage_table)
+
+        revert_table_action = QAction("Revert to Original Table", self.tests_with_biased_voltage_menu)
+        self.tests_with_biased_voltage_menu.addAction(revert_table_action)
+        revert_table_action.triggered.connect(self.revert_to_original_table)
+       
         
         self.combined_module_analysis_menu = QMenu("Combined Module Analysis")
         self.menuBar().addMenu(self.combined_module_analysis_menu)
@@ -172,7 +202,7 @@ class MainWindow(QMainWindow):
         self.combined_module_analysis_menu.addAction(self.badpixels_comparison_action)
         self.badpixels_comparison_action.triggered.connect(self.on_badpixels_comparison)
 
-
+      
         self.analysis_window = None
        
         self.layout.addWidget(self.title_label)
@@ -198,7 +228,9 @@ class MainWindow(QMainWindow):
         #self.table.setStyleSheet("QTableWidget { background-color: white; color: black; }")
         header.setSectionResizeMode(QHeaderView.Stretch)
 
+
     def update_table(self):
+
         for i, chip in enumerate(self.chips):
             color = QColor(self.colors[i])
 
@@ -211,6 +243,30 @@ class MainWindow(QMainWindow):
                 item.setTextAlignment(Qt.AlignCenter)
 
                 self.table.setItem(i, j+1, item)
+
+
+    def show_biased_voltage_table(self):
+        self.chips =  self.read_chip_data_from_file('biased_chips.txt')
+        stat_names = list(self.chips[0]["stats"].keys())
+        self.stat_mapping = {i: name for i, name in enumerate(stat_names, 1)}
+        header_labels = ["Module"] + list(map(str, self.stat_mapping.keys()))
+        self.table.setHorizontalHeaderLabels(header_labels)
+        self.table.setRowCount(len(self.chips))
+        
+        
+
+        self.update_table()
+    
+        
+    def revert_to_original_table(self):
+        self.chips =  self.original_chips
+        stat_names = list(self.chips[0]["stats"].keys())
+        self.stat_mapping = {i: name for i, name in enumerate(stat_names, 1)}
+        header_labels = ["Module"] + list(map(str, self.stat_mapping.keys()))
+        self.table.setHorizontalHeaderLabels(header_labels)
+        self.table.setRowCount(len(self.chips))
+        
+        self.update_table()
 
     def open_analysis_window(self, row, column):
         if column == 0:
