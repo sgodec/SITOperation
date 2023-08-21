@@ -1,0 +1,12 @@
+Mean threshold: 1921.45
+Sigma threshold: 109.118
+Mean of sigma: 176.647
+Sigma of sigma: 15.5499
+Bad pixels threshold: 16
+Mean ToT: 10.1749
+Sigma Tot: 0.323797
+Mean sigma distribution ToT: 0.311617
+Sigma sigma distribution ToT: 0.150562
+Bad pixels Tot: 1
+Leakage Current[mA]: 0.03561
+Breakdown Voltage/cmpl reached [V]: 99
