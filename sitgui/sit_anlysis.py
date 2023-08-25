@@ -154,6 +154,7 @@ class MainWindow(QMainWindow):
 
         self.sort_actions = [
             QAction("Random Sort", self.sort_menu),
+            QAction("Sort by least difference of set up threshold (2000)", self.sort_menu),
             QAction("Sort by Lowest Sigma Value", self.sort_menu),
             QAction("Sort by Lowest Leakage Current", self.sort_menu),
             QAction("Sort by Highest Breakdown Voltage", self.sort_menu),
@@ -176,18 +177,26 @@ class MainWindow(QMainWindow):
                 sort_action.triggered.connect(self.on_sort_badpixels_threshold)
             elif sort_action.text() == "Sort by least badpixels ToT":
                 sort_action.triggered.connect(self.on_sort_badpixels_tot)
+            elif sort_action.text() == "Sort by least difference of set up threshold (2000)":
+                sort_action.triggered.connect(self.on_sort_threshold)
 
          # Add a menu option for showing biased voltage table
 
         # create a menu instance
         self.tests_with_biased_voltage_menu = QMenu("Tests with Biased Voltage", self)
+        self.tests_good_chips = QMenu("Show good modules", self)
         
         # add it to the menu bar
         self.menuBar().addMenu(self.tests_with_biased_voltage_menu)
+        self.menuBar().addMenu(self.tests_good_chips)
     
         biased_voltage_action = QAction("Show Biased Voltage Table", self.tests_with_biased_voltage_menu)
         self.tests_with_biased_voltage_menu.addAction(biased_voltage_action)
         biased_voltage_action.triggered.connect(self.show_biased_voltage_table)
+
+        show_good_modules = QAction("Show good modules", self.tests_with_biased_voltage_menu)
+        self.tests_good_chips.addAction(show_good_modules)
+        show_good_modules.triggered.connect(self.show_good_modules)
 
         revert_table_action = QAction("Revert to Original Table", self.tests_with_biased_voltage_menu)
         self.tests_with_biased_voltage_menu.addAction(revert_table_action)
@@ -258,6 +267,18 @@ class MainWindow(QMainWindow):
         
 
         self.update_table()
+
+    def show_good_modules(self):
+            self.chips =  self.read_chip_data_from_file('good_chips.txt')
+            stat_names = list(self.chips[0]["stats"].keys())
+            self.stat_mapping = {i: name for i, name in enumerate(stat_names, 1)}
+            header_labels = ["Module"] + list(map(str, self.stat_mapping.keys()))
+            self.table.setHorizontalHeaderLabels(header_labels)
+            self.table.setRowCount(len(self.chips))
+            
+            
+
+            self.update_table()
     
         
     def revert_to_original_table(self):
@@ -300,6 +321,9 @@ class MainWindow(QMainWindow):
         self.update_table()
     def on_sort_badpixels_tot(self):
         self.chips.sort(key=lambda chip: -float(chip["stats"]["Bad pixels Tot"]))
+        self.update_table()
+    def on_sort_threshold(self):
+        self.chips.sort(key=lambda chip:abs(2000-float(chip["stats"]["Mean threshold"])))
         self.update_table()
 
     def clear_analysis_window(self):
