@@ -13,19 +13,17 @@ with open('chips.txt', 'r') as f:
 # Create a larger figure
 fig, ax = plt.subplots(figsize=(14, 12))
 
-# Cycle through colors for each plot
-color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
+# Generate a unique color for each chip
+num_colors = len(chip_names)
+colors = plt.cm.viridis(np.linspace(0, 1, num_colors))
 
-# Loop over chip names and plot data
 for i, chip in enumerate(chip_names):
-    # Read data for chip
     data = pd.read_csv(f'../SiT_testing//{chip}/iv_data.txt', sep='\s+', header=None, names=['Voltage', 'Current'])
-
-    # Plot data with thicker lines
-    ax.plot(data['Voltage'], data['Current'], label=chip, color=color_cycle[i % len(color_cycle)], linewidth=2.0)
+    ax.plot(data['Voltage'], data['Current'], label=chip, color=colors[i], linewidth=2.0)
+    ax.scatter(data['Voltage'], data['Current'], color=colors[i], alpha=0.3)
 
     # Add scatter plot
-    ax.scatter(data['Voltage'], data['Current'], color=color_cycle[i % len(color_cycle)], alpha=0.3)
+    ax.scatter(data['Voltage'], data['Current'],color=colors[i], alpha=0.3)
 
 # Add complementary level line
 ax.axhline(y=0.5, color='r', linestyle=':', label='cmpl level batch1')
