@@ -39,7 +39,7 @@ ax.set_ylabel('Number of pixels', fontsize=14)
 ax.set_title('Badpixels for each module', fontsize=16)
 
 # Set Y-axis limit
-ax.set_ylim([0, 80])  # adjust as necessary
+ax.set_ylim([0, 80])
 
 # Add xticks - on the 'index' position, we place the corresponding chip name
 ax.set_xticks(index + bar_width / 2)
