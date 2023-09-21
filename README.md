@@ -10,11 +10,11 @@ The app is designed to work with Python and requires the PySide6 library to be i
    - If you haven't already installed Python on your Windows machine, download the latest Python version from the official website [here](https://www.python.org/downloads/).
    - During the installation process, make sure to select the option to add Python to the PATH.
 
-2. **Install PySide6:**
+2. **Install PySide2:**
    - Open a Command Prompt or PowerShell window.
-   - Install the PySida6 library using pip by entering the following command:
+   - Install the PySida2 library using pip by entering the following command:
      ```
-     pip install PySide6
+     pip install PySide2
 3. **Install Pandas:**
    - Open a Command Prompt or PowerShell window.
    - Install the Pandas library using pip by entering the following command:
